@@ -3,11 +3,14 @@ import { Button, Col, Container, Form, Modal, Row } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { MdModeEdit } from "react-icons/md";
 import { BsFillPlusCircleFill } from "react-icons/bs";
-
+import { BsChatLeftFill } from "react-icons/bs";
+import { useNavigate } from 'react-router-dom';
 import "./ProfileCard.css";
 import Loader from "./Loader";
 import { getBlockedUsers } from "../actions/blockActions";
 import BlockedList from "../screens/blockList";
+import {  getMessages, sendMessage } from '../actions/messageActions';
+import { getChats } from '../actions/messageActions';
 
 import fire from "../assets/fire.svg";
 import { addMyBio, addMyProfile } from "../actions/userActions";
@@ -20,9 +23,21 @@ const UserInfoCard = ({ user_id }) => {
   const [showBlockedUsers, setShowBlockedUsers] = useState(false);
   const [fullBioShow, setFullBioShow] = useState(false);
   const [showImageModal, setShowImageModal] = useState(false);
+  const navigate = useNavigate();
   
   let userr_id = JSON.parse(localStorage.getItem("userInfo")).id;
   let myuser=String(userr_id)===String(user_id);
+
+  const handleSend = (userId) => {
+    // Perform the logic to send the message
+    // Assuming you have a function or action to handle sending messages
+    dispatch(sendMessage(userId));
+    navigate(`/app/chats?userId=${userId}`)
+    dispatch(getChats());
+     // Sending a blank string as the message
+  
+    // Optionally, you can also close the form or perform other actions
+  };
 
   const {
     loading,
@@ -131,6 +146,11 @@ const UserInfoCard = ({ user_id }) => {
       >
         Blocked Users
       </Button> }
+      {!myuser &&  
+      <Button variant="outline-secondary" onClick={() => handleSend(user_id)} style={{display:"flex",justifyContent:'space-between',alignItems:'center',marginLeft:30}}>
+        <i className="fa fa-envelope"></i>
+      </Button>
+}
     </div>
   </Col>
 </Row>

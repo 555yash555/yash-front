@@ -17,6 +17,8 @@ import CommentForm from "./Comments/CommentForm";
 import { blockUser,unblockUser } from "../actions/blockActions";
 import Comments from "./Comments/Comments";
 import {bookmarkPost,removeBookmark} from "../actions/bookedMarkActions";
+import Message from '../components/Message';
+import Loader from '../components/Loader';
 import { reportPost } from "../actions/reportActions";
 import "./ProfileCard.css";
 import AttachmentCarousel from "./corosloe";
@@ -49,20 +51,27 @@ const TownHallCard = ({ townHall, showId, setShowId, live }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [selectedProblem, setSelectedProblem] = useState(null);
   const navigate = useNavigate();
+  const [linkc, setlinkc] = useState(false);
 
   // const handleShare = (post_id) => {
   //   // Assuming your route is named 'post', navigate to the new post page
   //   navigate(`app/post/${post_id}`);
   // };
 
-  const handleCopyLink = () => {
+  const handleCopyLink = (event) => {
+    event.preventDefault(); // Add this line to prevent default behavior
+  
     const postLink = `${window.location.origin}/app/singlepost/${townHall.post_id}`;
-    
+  
     navigator.clipboard.writeText(postLink)
       .then(() => {
         // Successfully copied to clipboard
         console.log('Link copied to clipboard:', postLink);
-        alert('Link copied to clipboard!');
+        setlinkc(true);
+        setTimeout(() => {
+          setlinkc(false);
+        }, 3000);
+  
       })
       .catch((error) => {
         // Handle clipboard copy error
@@ -70,6 +79,7 @@ const TownHallCard = ({ townHall, showId, setShowId, live }) => {
         alert('Error copying link to clipboard!');
       });
   };
+  
   
   
   const handleBookmark = (post_id) => {
@@ -493,7 +503,7 @@ const TownHallCard = ({ townHall, showId, setShowId, live }) => {
         }}>
           <TbArrowBigDownLines
             size={40}
-            style={{ color: "green", backgroundColor: "color" }}
+            style={{ color: "red", backgroundColor: "color" }}
           />
         </Button>
       ) : (
@@ -587,7 +597,9 @@ const TownHallCard = ({ townHall, showId, setShowId, live }) => {
       to={`/app/singlepost/${townHall.post_id}`}
       style={{ font: "inherit", textDecoration: "inherit",color:"black" }}
     >
-    <FaShareAlt size={40} onClick={handleCopyLink}/>
+    <FaShareAlt size={40} onClick={(event) => handleCopyLink(event)} />
+
+
   </Link>
     </div>
   </Col>
@@ -902,7 +914,8 @@ const TownHallCard = ({ townHall, showId, setShowId, live }) => {
       to={`/app/singlepost/${townHall.post_id}`}
       style={{ font: "inherit", textDecoration: "inherit",color:"black" }}
     >
-    <FaShareAlt size={40} onClick={handleCopyLink} />
+    <FaShareAlt size={40} onClick={(event) => handleCopyLink(event)} />
+    {linkc && <Message variant='success'>Your post has been created successfully.</Message>}
   </Link>
     </div>
   </Col>
@@ -918,6 +931,7 @@ const TownHallCard = ({ townHall, showId, setShowId, live }) => {
             </Container>
           )}
         </Container>
+        {linkc && <Message >Copied to ClipBoard.</Message>}
       </div>
     );
           }else{

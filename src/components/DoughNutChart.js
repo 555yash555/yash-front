@@ -26,16 +26,23 @@ const DoughNutChart = ({ count, totalCount }) => {
       legend: {
         display: false,
       },
-    },
-    tooltips: {
-      titleFontSize: 5,
-      bodyFontSize: 5,
-      position: "nearest",
-
-      percentageInnerCutout: 20,
-    },
-  };
-
+      tooltip: {
+        callbacks: {
+          label: function (context) {
+            let label = '';
+            if (context.parsed !== null) {
+              label = Math.round(context.parsed) + '%';
+            }
+            return label;
+          },
+        },
+        titleFontSize: 5,
+        bodyFontSize: 5,
+        position: "nearest",
+        percentageInnerCutout: 20,
+      },
+    },
+  };
   return (
     <div style={{ width: "100%", height: "100%" }}>
       <Doughnut data={data} options={options} />
